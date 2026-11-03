@@ -3,18 +3,26 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
+def salam_waktu(jam):
+    """Mengembalikan salam sesuai jam (0-23)."""
+    if 4 <= jam < 11:
+        return "Selamat pagi"
+    if 11 <= jam < 15:
+        return "Selamat siang"
+    if 15 <= jam < 18:
+        return "Selamat sore"
+    return "Selamat malam"  # 18.00-03.59
+
 # Satu rute untuk GET (buka halaman) dan POST (kirim formulir)
 @app.route("/", methods=["GET", "POST"])
 def beranda():
     nama = ""
-    if request.method == "POST":
-        # Ambil nama, buang spasi di tepi, batasi maksimal 50 karakter
-        nama = request.form.get("nama", "").strip()[:50]
+       # Tanggal dan jam server saat ini, lalu tentukan salamnya
+    waktu_sekarang = datetime.now()
+    sekarang = waktu_sekarang.strftime("%d-%m-%Y %H:%M:%S")
+    salam = salam_waktu(waktu_sekarang.hour)
 
-    # Tanggal dan jam server saat ini
-    sekarang = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
-
-    return render_template("index.html", sekarang=sekarang, nama=nama)
+    return render_template("index.html", sekarang=sekarang, nama=nama, salam=salam)
 
 if __name__ == "__main__":
     # Berjalan di localhost saja
